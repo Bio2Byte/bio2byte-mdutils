@@ -7,9 +7,9 @@ MD simulations and generating figures for publication.
 
 | File                          | Description |
 |-------------------------------|---|
-|  **MD Preparation**           | |
+| **Preparation** | |
 | `build_peptides.ipynb`        | This script was used to build the starting conformations of the peptides |
-| **Analyses**                  | |
+| **Analysis** | |
 | `dihedral_timeseries.ipynb`   | Calculates circular variance onf phi/psi dihedrals |
 | `ramachandran.ipynb`          | Visualization of dihedral angles as ramachandran plots |
 | `ramachandran_rmsd.ipynb`     | Comparison between peptides, based on their ramachandran profiles |
