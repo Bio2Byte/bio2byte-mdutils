@@ -48,7 +48,7 @@ is reached.
 
 ## Force fields
 
-## AMBER ff99SB-ILDN  for GROMACS
+### AMBER ff99SB-ILDN  for GROMACS
 
 Amber99SB-ILDN is an improvement to Amber99SB by Kresten Lindorff-Larsen and 
 coworkers at D.E. Shaw Research, inc. [1,2]
@@ -60,7 +60,7 @@ ff99SB protein force field, Proteins 78:1950–1958 (2010)
 
 The present Gromacs implementation was taken from GROMCAS 2021-2. 
 
-### Added features
+#### Added features
 
 The following features have been added to the native force field:
 * OPC water model [3]
@@ -69,7 +69,7 @@ The following features have been added to the native force field:
 * TIP4P-D water model [6]
 * Parameters for phosphorylated residues [7,8]
 
-### References
+#### References
 
 1.  Lindorff-Larsen, K. et al. (2010). Proteins 78, 1950-1958.
 2.  Hornak, V. et al. (2006). Proteins 65, 712-725.
