@@ -97,5 +97,4 @@ cite the associated [publication](https://www.biorxiv.org/content/10.1101/2024.0
 
 ## License
 
-This repository is licensed under GNU General Public License v3.0 
-([GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html)).
+This repository is licensed under MIT license.
