@@ -1,0 +1,100 @@
+; ----- Gromacs build for phosaa10 parameters (transferred from AmberTools21)
+;
+; This file contains charges and force field parameters for phosphorylated
+; amino acids under the ff99SB protein force field (and related ff94/96/99
+; force fields). We recommend that you do *NOT* use these parameters with the
+; ff14SB protein force field as the requisite atom types are not present and
+; the dihedral potentials will be mismatched. (The Simmerling group hopes to
+; release ff14SB-compatible parameters for phosphorylated amino acids later
+; in 2016.) Also note that the bond, angle, and dihedral terms are mostly
+; generic and taken from analogy with existing terms in parm99.dat.
+;
+; The amino acids associated with phosaa10 are:
+;
+; PTR:   phosphotyrosine with a 2- net charge  (using PDB nomenclature)
+; SEP:   phosphoserine with a 2- net charge  (using PDB nomenclature)
+; TPO:   phosphothreonine with a 2- net charge  (using PDB nomenclature)
+; Y1P:   phosphotyrosine with a 1- net charge  (nonstandard nomenclature)
+; S1P:   phosphoserine with a 1- net charge  (nonstandard nomenclature)
+; T1P:   phosphothreonine with a 1- net charge  (nonstandard nomenclature)
+;
+; To use these residues, load this file into leap after the Amber force field,
+; e.g.:
+;
+; > source oldff/leaprc.ff99SB
+; > source leaprc.phosaa10
+;
+; The partial atomic charges come from:
+;
+; N. Homeyer, A.H.C. Horn, H. Lanig, and H. Sticht.
+; AMBER force-field parameters for phosphorylated amino acids in
+; different protonation states: phosphoserine, phosphothreonine,
+; phosphotyrosine, and phosphohistidine.
+; J. Mol. Model. 12:281-289, 2006.
+;
+; The phosphate oxygen vdW parameters come from:
+;
+; T. Steinbrecher, J. Latzer, and D.A. Case.
+; Revised AMBER parameters for bioorganic phosphates.
+; J. Chem. Theo. Comput. 8:4405-4412, 2012.
+
+[ bondtypes ]
+; i  j   func  b0        kb
+  HO OQ     1   0.09600  462750.4  ; from HO-OH
+  OP P      1   0.14800  439320.0  ; from O2-P
+  OQ P      1   0.16100  192464.0  ; from OH-P
+  OR P      1   0.16100  192464.0  ; from OS-P
+  C  OR     1   0.13230  376560.0  ; from C -OS
+  CT OR     1   0.14100  267776.0  ; from CT-OS
+  OT P      1   0.14800  439320.0  ; repeat parameters for TYR 2-
+  OV P      1   0.16100  192464.0
+  C  OV     1   0.13230  376560.0
+  CT OV     1   0.14100  267776.0
+  OX P      1   0.14800  439320.0  ; repeat parameters for SER/THR 2-
+  OZ P      1   0.16100  192464.0
+  C  OZ     1   0.13230  376560.0
+  CT OZ     1   0.14100  267776.0
+
+[ angletypes ]
+; i  j  k   func  th0       cth
+  OP P  OP     1  119.90000    1171.5  ; from O2-P -O2
+  OP P  OQ     1  108.23000     753.1  ; from O2-P -OH ! raised to prevent simulation instabilities
+  OQ P  OR     1  108.23000     753.1  ; "" ""
+  OQ P  OQ     1  108.23000     753.1  ; "" ""
+  OR P  OR     1  102.60000     753.1  ; from OS-P -OS ! raised to prevent simulation instabilities
+  OR P  OP     1  108.23000     836.8  ; from O2-P -OS
+  HO OQ P      1  113.28000     836.8  ; from HO-OH-P ! raised to prevent simulation instabilities, equilibrium from G03 calculations
+  C  OR P      1  120.50000     836.8  ; from Sticht et al. (frcmod.y1p)
+  CA C  OR     1  120.00000     585.8  ; "" ""
+  CT OR P      1  120.50000     836.8  ; from CT-OS-P
+  CT CT OR     1  109.50000     418.4  ; from CT-CT-OS
+  H1 CT OR     1  109.50000     418.4  ; from H1-CT-OS
+  OT P  OT     1  119.90000    1171.5  ; repeat parameters for TYR 2-
+  OV P  OV     1  102.60000     753.1
+  OV P  OT     1  108.23000     836.8
+  C  OV P      1  120.50000     836.8
+  CA C  OV     1  120.00000     585.8
+  CT OV P      1  120.50000     836.8
+  CT CT OV     1  109.50000     418.4
+  H1 CT OV     1  109.50000     418.4
+  OX P  OX     1  119.90000    1171.5  ; repeat parameters for SER/THR 2-
+  OZ P  OZ     1  102.60000     753.1
+  OZ P  OX     1  108.23000     836.8
+  C  OZ P      1  120.50000     836.8
+  CA C  OZ     1  120.00000     585.8
+  CT OZ P      1  120.50000     836.8
+  CT CT OZ     1  109.50000     418.4
+  H1 CT OZ     1  109.50000     418.4
+
+[ dihedraltypes ]
+;i  j  k  l  func  phase   kd        pn
+ X  CT OZ X      1    0.00   1.60387  3
+ X  C  OZ X      1  180.00  11.29680  2
+ X  OZ P  X      1    0.00   1.04600  3  ; repeat parameters for SER/THR 2-
+ X  CT OV X      1    0.00   1.60387  3
+ X  C  OV X      1  180.00  11.29680  2
+ X  OV P  X      1    0.00   1.04600  3  ; repeat parameters for TYR 2-
+ X  CT OR X      1    0.00   1.60387  3  ; from X -CT-OS-X
+ X  C  OR X      1  180.00  11.29680  2  ; from X-C -OS-X
+ X  OR P  X      1    0.00   1.04600  3  ; from X -OS-P -X
+ X  OQ P  X      1    0.00   1.04600  3  ; from X -OH-P -X

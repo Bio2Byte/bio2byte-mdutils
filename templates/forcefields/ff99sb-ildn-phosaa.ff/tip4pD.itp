@@ -1,0 +1,69 @@
+; TIP4P-D water model itp-file
+;   
+;   Built from specifications mentioned in [Piana et al. (2015). J.Phys.Chem.B]:
+;   - atom/bond specifications taken from TIP4P
+;   - dummy atom placement taken from TIP4P/2005 [Abascal & Vega (2005), J.Chem.Phys.]
+;   - atom charges defined as q(H) = 0.58 [Piana et al. (2015). J.Phys.Chem.B]
+;   - O atom L-J parameters calculated from [Piana et al. (2015). J.Phys.Chem.B]:
+;       C6  = 900     kcal/mol/A^6
+;       C12 = 904,657 kcal/mol/A^6
+;
+;           C6  = 4 * W * (V^6)
+;           C12 = 4 * W * (V^12)
+;           => V = sigma   = 3.16500e-01 nm
+;           => W = epsilon = 9.37177e-01 kJ/mol
+;
+
+[ moleculetype ]
+; molname nrexcl
+SOL     1
+
+[ atoms ]
+; id  at type     res nr  res name  at name  cg nr  charge  mass
+  1   OW_t4pD     1       SOL       OW       1       0      15.9994
+  2   HW_t4pD     1       SOL       HW1      1       0.58    1.0079
+  3   HW_t4pD     1       SOL       HW2      1       0.58    1.0079
+  4   MW_t4pD     1       SOL       MW       1      -1.16    0.0000
+
+#ifndef FLEXIBLE
+
+[ settles ]
+; i funct   doh dhh
+1   1   0.09572 0.15139
+
+#else
+[ bonds ]
+; i     j       funct   length       Dr      beta
+1       2       3       0.09419  432.580584  22.87
+1       3       3       0.09419  432.580584  22.87
+
+[ angles ]
+; i     j       k       funct   angle   force.c.
+2       1       3       1       107.4   367.810 
+
+#endif
+
+[ exclusions ]
+1   2   3   4
+2   1   3   4
+3   1   2   4
+4   1   2   3
+
+[ virtual_sites3 ]
+; Vsite from                    funct   a               b
+4       1       2       3       1       0.131937768     0.131937768
+
+
+; The position of the dummy is computed as follows:
+;
+;       O
+;
+;       D
+;
+;   H       H
+;
+; const = distance (OD) / [ cos (angle(DOH))    * distance (OH) ]
+;     0.01546 nm    / [ cos (52.26 deg) * 0.09572 nm    ]
+;
+; Dummy pos x4 = x1 + a*(x2-x1) + b*(x3-x1)
+

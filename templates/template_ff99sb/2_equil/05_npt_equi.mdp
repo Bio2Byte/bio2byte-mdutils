@@ -1,0 +1,57 @@
+; Pressure equilibration by 250 ps NPT MD
+;   Restraints of 1000 kcal/mol/nm2 on solute heavy atoms
+define = -DPOSRES
+
+; MD run parameters
+integrator = md
+nsteps     = 125000
+dt         = 0.002
+
+; Output control
+nstxout-compressed = 2500
+nstenergy          = 100
+nstlog             = 500
+
+; Neighbor list
+cutoff-scheme           = Verlet
+nstlist                 = 20
+verlet-buffer-tolerance = 0.005
+
+; Electrostatics
+coulombtype    = PME
+pme-order      = 4
+fourierspacing = 0.12
+rcoulomb       = 1.0
+
+; VdW
+vdwtype  = Cut-off
+rvdw     = 1.0
+DispCorr = EnerPres
+
+; Temperature control
+tcoupl     = v-rescale
+tc-grps    = Protein    Non-Protein
+ref-t      = 298        298
+tau-t      = 0.1        0.1
+nsttcouple = 10
+
+; Pressure control
+pcoupl           = Berendsen
+pcoupltype       = isotropic
+ref-p            = 1.0
+tau-p            = 0.5
+compressibility  = 4.5e-5
+refcoord-scaling = all
+
+; Generate starting velocities
+gen-vel      = no
+continuation = yes
+
+; Bonds
+constraints          = h-bonds
+constraint-algorithm = LINCS
+lincs-order          = 4
+lincs-iter           = 2
+
+pbc = xyz
+

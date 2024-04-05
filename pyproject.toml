@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bio2byte.mdutils"
+description = "Templates and analysis scripts for MD simulations of post-translationally modified peptides"
+dynamic = ["version"]
+readme = {file = "README.md", content-type = "text/markdown"}
+license = {text = "GPLv3"}
+authors = [
+    {name = "David Bickel", email = "david.bickel@vub.be"},
+]
+maintainers = [
+    {name = "David Bickel", email = "david.bickel@vub.be"},
+    {name = "Wim Vranken", email = "wim.vranken@vub.be"},
+]
+requires-python = ">= 3.8"
+dependencies = [
+    "constava >= 1.0",
+    "MDAnalysis",
+    "numpy",
+    "pandas",
+    "panedr",
+    "pytrr",
+    "tqdm",
+    "bio2byte-peptidebuilder@git+https://github.com/Bio2Byte/bio2byte-peptidebuilder",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+keywords = ["Molecular dynamics", "MD"]
+
+[project.scripts]
+mdutils-process-trajectory = "bio2byte.mdutils.exec.exec:process_trajectories"
+mdutils-hbonds-wrapper = "bio2byte.mdutils.exec.exec:hbonds_wrapper"
+mdutils-hbonds = "bio2byte.mdutils.exec.mediated_hbonds:main"
+mdutils-centroid = "bio2byte.mdutils.exec.central_structure:main"
+mdutils-dihedrals = "bio2byte.mdutils.exec.dihedrals:main"
+mdutils-dihedral-pca = "bio2byte.mdutils.exec.dihedral_pca:main"
+mdutils-replica-correlation = "bio2byte.mdutils.exec.replica_correlation:main"
+mdutils-ionic-contacts = "bio2byte.mdutils.exec.ionic_contacts:main"
+mdutils-protein-contacts = "bio2byte.mdutils.exec.protein_contacts:main"
+mdutils-constava-wrapper = "bio2byte.mdutils.exec.constava_wrapper:main"
+
+[project.urls]
+Homepage = "https://www.bio2byte.be"
+Repository = "https://github.com/Bio2Byte/mdutils"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = {attr = "bio2byte.mdutils.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = true

@@ -1,0 +1,37 @@
+SEP 3
+    1   1   H   N   -C  CA
+    1   5   HA  CA  N   CB  C
+    2   6   HB  CB  CA  OG
+S1P 4
+    1   1   H   N   -C  CA
+    1   5   HA  CA  N   CB  C
+    2   6   HB  CB  CA  OG
+    1   2   H1P O1P P   OG
+TPO 4
+    1   1   H   N   -C  CA
+    1   5   HA  CA  N   CB  C
+    1   5   HB  CB  CA  CG2 OG1
+    3   4   HG2 CG2 CB  CA
+T1P 5
+    1   1   H   N   -C  CA
+    1   5   HA  CA  N   CB  C
+    1   5   HB  CB  CA  CG2 OG1
+    3   4   HG2 CG2 CB  CA
+    1   2   H1P O1P P   OG1
+PTR 7
+    1   1   H   N   -C  CA
+    1   5   HA  CA  N   CB  C
+    2   6   HB  CB  CA  CG
+    1   1   HD1 CD1 CG  CE1
+    1   1   HE1 CE1 CD1 CZ
+    1   1   HE2 CE2 CZ  CD2
+    1   1   HD2 CD2 CG  CE2
+Y1P 8
+    1   1   H   N   -C  CA
+    1   5   HA  CA  N   CB  C
+    2   6   HB  CB  CA  CG
+    1   1   HD1 CD1 CG  CE1
+    1   1   HE1 CE1 CD1 CZ
+    1   1   HE2 CE2 CZ  CD2
+    1   1   HD2 CD2 CG  CE2
+    1   2   H1P O1P P   OG

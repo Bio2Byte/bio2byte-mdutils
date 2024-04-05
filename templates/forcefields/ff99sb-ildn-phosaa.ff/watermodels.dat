@@ -1,0 +1,10 @@
+tip3p       TIP3P       TIP 3-point, recommended
+tip4p       TIP4P       TIP 4-point
+tip4pew     TIP4P-Ew    TIP 4-point, optimized with Ewald
+tip4p2005   TIP4P/2005  TIP 4-point, optimzed charge placement
+tip4p2005f  TIP4P/2005f TIP 4-point, optimzed charge placement (flexible model)
+tip4pD      TIP4P-D     TIP 4-point, increased dispersion interactions
+opc         OPC         OPC 4-point (requires long range dispersion correction)
+tip5p       TIP5P       TIP 5-point (see https://gitlab.com/gromacs/gromacs/-/issues/1348 for issues)
+spc         SPC         simple point charge
+spce        SPC/E       extended simple point charge

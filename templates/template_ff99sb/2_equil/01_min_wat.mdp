@@ -1,0 +1,29 @@
+; Minimization of solvent molecules
+;   Heavy atoms of solute restrained with 1000 kJ/mol/nm2
+define = -DPOSRES
+
+; Energy minimization parameters
+integrator = steep
+emtol      = 100        ; 100.0 kJ/mol/nm
+emstep     = .01
+nsteps     = 10000
+nstlog     = 10
+
+; Neighbor list
+cutoff-scheme           = Verlet
+nstlist                 = 20
+rlist                   = 1
+pbc                     = xyz
+verlet-buffer-tolerance = 0.005
+
+; Electrostatics
+coulombtype    = PME
+pme-order      = 4
+fourierspacing = 0.12
+rcoulomb       = 1.0
+
+; VdW
+vdwtype  = Cut-off
+rvdw     = 1.0
+DispCorr = EnerPres
+

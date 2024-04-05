@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=10
+#SBATCH --gpus=1
+#SBATCH --mem=10G
+#SBATCH --partition=##YOUR_PARTITION##
+#SBATCH --time=0:10:00
+#SBATCH -J MDpreparation
+#SBATCH -a 0-840
+
+echo ------------------------------------------------------
+echo $SLURM_JOB_ID :: $SLURM_JOB_NAME
+echo ------------------------------------------------------
+echo SLURM: Job submitted from $SLURM_SUBMIT_HOST
+echo SLURM: Job is running on $SLURM_JOB_PARTITION
+echo -n "SLURM: Job running on node(s): "; echo "$SLURM_NODELIST"
+echo SLURM: Working directory is "$SLURM_SUBMIT_DIR"
+echo SLURM: Execution mode is $ENVIRONMENT
+echo SLURM: \$PATH set to $PATH
+echo ------------------------------------------------------
+
+# Define helper functions
+check_success() {
+    ERR=$?; [ $ERR -ne 0 ] && echo "[ERR:${ERR}] $*" && exit $ERR
+}
+
+# Make sure all commands are available
+which gmx &> /dev/null; check_success "Cannot find GROMACS executable"
+
+# --- DECLARE VARIABLES
+#
+# Directory with pdb structures
+#   Structures should be name <name>.<number>.pdb, where <name> is the name
+#   describing the structure, and <number> is the starting conformation.
+peptDir= 
+
+# Absolute path to an MD template directory, e.g., template_ff99SB
+tmplDir="/path/to/template_ff99SB"
+[ -d $tmplDir ]; check_success "Cannot find MD template directory: '$(readlink -f $tmplDir)'"
+
+# Output directory for the ready to run simulations
+outDir="/theia/scratch/brussel/104/vsc10478/5peptides"
+
+peptideModels=( $peptDir/*.?.pdb )
+iter=$SLURM_ARRAY_TASK_ID
+
+# --- GOTO PEPTIDE DIRECTORY
+#
+echo Goto "$peptDir"
+cd "$peptDir"
+check_success "Cannot access directory: $peptDir"
+
+# --- ITERATE OVER PDB-FILES
+#
+for pdbFile in ${peptideModels[$iter]}
+do
+    pdb=$(basename "$pdbFile")
+    peptide=${pdb%%.*}
+    num=$(echo "${pdb#*.}" | grep -oP '\d')
+    
+    mkdir -p "$outDir/$peptide/run$num"
+    check_success "Cannot create directory: $outDir/$peptide/run$num"
+    
+    rsync -a $tmplDir/ $outDir/$peptide/run$num
+    
+    # --- PREPARATION
+    #
+    cd $outDir/$peptide/run$num/1_prepi
+    check_success "Cannot access directory: $outDir/$peptide/run$num/1_prepi"
+    
+    ln -s $pdbFile
+    ./preparation.sh $pdb
+
+    # --- Equilibration
+    #
+    cd ../2_equil
+    ./equilibration.sh 
+
+    sed -i "s/##PRODUCTION##/${peptide}.${num}/" ../3_prod/production.*
+
+    cd ../../
+done

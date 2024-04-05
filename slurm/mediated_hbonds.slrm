@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+#SBATCH --ntasks=10
+#SBATCH --mem-per-cpu=8G
+#SBATCH --partition=##YOUR_PARTITION##
+#SBATCH --time=12:00:00
+#SBATCH -J analyze_hbonds
+
+echo ------------------------------------------------------
+echo $SLURM_JOB_ID :: $SLURM_JOB_NAME
+echo ------------------------------------------------------
+echo SLURM: Job submitted from $SLURM_SUBMIT_HOST
+echo SLURM: Job is running on $SLURM_JOB_PARTITION
+echo -n "SLURM: Job running on node(s): "; echo "$SLURM_NODELIST"
+echo SLURM: Working directory is "$SLURM_SUBMIT_DIR"
+echo SLURM: Execution mode is $ENVIRONMENT
+echo SLURM: \$PATH set to $PATH
+echo ------------------------------------------------------
+
+# MAKE SURE ALL MODULES ARE LOADED
+# * GROMACS
+# * parallel
+# * Python environment with bio2byte-mdutils
+
+cd "$SLURM_SUBMIT_DIR"
+
+MD_DIRECTORIES=( $(for i in gg*gg; do [ ! -f $i/analy/hbonds.csv ] && echo $i; done | xargs) )
+EXEC_SCRIPT="mdutils-hbonds-wrapper"
+
+parallel -j $SLURM_NTASKS srun -N 1 -n 1 -c 1 --exact \
+    "$EXEC_SCRIPT" {} ::: ${MD_DIRECTORIES[@]}

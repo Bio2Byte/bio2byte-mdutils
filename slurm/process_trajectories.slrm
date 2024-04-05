@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+#SBATCH --ntasks=8
+#SBATCH --mem-per-cpu=2G
+#SBATCH --partition=##YOUR_PARTITION##
+#SBATCH --time=4:00:00
+#SBATCH -J analyze_MDs
+
+echo ------------------------------------------------------
+echo $SLURM_JOB_ID :: $SLURM_JOB_NAME
+echo ------------------------------------------------------
+echo SLURM: Job submitted from $SLURM_SUBMIT_HOST
+echo SLURM: Job is running on $SLURM_JOB_PARTITION
+echo -n "SLURM: Job running on node(s): "; echo "$SLURM_NODELIST"
+echo SLURM: Working directory is "$SLURM_SUBMIT_DIR"
+echo SLURM: Execution mode is $ENVIRONMENT
+echo SLURM: \$PATH set to $PATH
+echo ------------------------------------------------------
+
+# MAKE SURE ALL MODULES ARE LOADED
+# * GROMACS
+# * parallel
+# * Python environment with bio2byte-mdutils
+
+cd "$SLURM_SUBMIT_DIR"
+
+MD_DIRECTORIES=( $(for mddir in gg*gg; do [ ! -d ${mddir}/analy ] && echo "${mddir}"; done | xargs) )
+EXEC_SCRIPT="mdutils-process-trajectory"
+
+parallel -j $SLURM_NTASKS \
+    srun -N 1 -n 1 -c 1 --exact "$EXEC_SCRIPT" {} ::: ${MD_DIRECTORIES[@]}
+
+exit

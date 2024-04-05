@@ -1,0 +1,50 @@
+; ----- Gromacs build for phosaa10 parameters (transferred from AmberTools21)
+;
+; This file contains charges and force field parameters for phosphorylated
+; amino acids under the ff99SB protein force field (and related ff94/96/99
+; force fields). We recommend that you do *NOT* use these parameters with the
+; ff14SB protein force field as the requisite atom types are not present and
+; the dihedral potentials will be mismatched. (The Simmerling group hopes to
+; release ff14SB-compatible parameters for phosphorylated amino acids later
+; in 2016.) Also note that the bond, angle, and dihedral terms are mostly
+; generic and taken from analogy with existing terms in parm99.dat.
+;
+; The amino acids associated with phosaa10 are:
+;
+; PTR:   phosphotyrosine with a 2- net charge  (using PDB nomenclature)
+; SEP:   phosphoserine with a 2- net charge  (using PDB nomenclature)
+; TPO:   phosphothreonine with a 2- net charge  (using PDB nomenclature)
+; Y1P:   phosphotyrosine with a 1- net charge  (nonstandard nomenclature)
+; S1P:   phosphoserine with a 1- net charge  (nonstandard nomenclature)
+; T1P:   phosphothreonine with a 1- net charge  (nonstandard nomenclature)
+;
+; To use these residues, load this file into leap after the Amber force field,
+; e.g.:
+;
+; > source oldff/leaprc.ff99SB
+; > source leaprc.phosaa10
+;
+; The partial atomic charges come from:
+;
+; N. Homeyer, A.H.C. Horn, H. Lanig, and H. Sticht.
+; AMBER force-field parameters for phosphorylated amino acids in
+; different protonation states: phosphoserine, phosphothreonine,
+; phosphotyrosine, and phosphohistidine.
+; J. Mol. Model. 12:281-289, 2006.
+;
+; The phosphate oxygen vdW parameters come from:
+;
+; T. Steinbrecher, J. Latzer, and D.A. Case.
+; Revised AMBER parameters for bioorganic phosphates.
+; J. Chem. Theo. Comput. 8:4405-4412, 2012.
+
+[ atomtypes ]
+; name  at.num  mass   charge  ptype  sigma  epsilon
+OP        8     16.00  0.0000   A     3.11690e-01  8.78640e-01  ; modified acc. to FEP solvation energies for phosphate monoanions
+OQ        8     16.00  0.0000   A     3.22345e-01  8.78640e-01  ; a uniform radius increase of 0.0881 A was applied
+OR        8     16.00  0.0000   A     3.15699e-01  7.11280e-01
+OT        8     16.00  0.0000   A     2.91092e-01  8.78640e-01  ; modified acc. to FEP solvation energies for TYR 2-
+OV        8     16.00  0.0000   A     2.95101e-01  7.11280e-01  ; a uniform radius increase of -0.0275 A was applied
+OX        8     16.00  0.0000   A     3.27869e-01  8.78640e-01  ; modified acc. to FEP solvation energies for SER/THR 2-
+OZ        8     16.00  0.0000   A     3.31878e-01  7.11280e-01  ; a uniform radius increase of 0.1789 A was applied
+
