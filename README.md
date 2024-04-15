@@ -1,11 +1,9 @@
 # Bio2byte :: Molecular dynamics utilities
 
+*by David Bickel and Wim Vranken*
+
 This repository contains an assembly of templates, scripts, and Jupyter 
 notebooks for running and analyzing large-scale MD simulations.
-
-The scripts in this repository have been written and applied in context
-of the following publication. So, if you want to reuse any scripts in
-this repository.
 
 ## Contents
 
@@ -98,3 +96,9 @@ cite the associated [publication](https://www.biorxiv.org/content/10.1101/2024.0
 ## License
 
 This repository is licensed under MIT license.
+
+## Contact
+
+[![ORCID](https://orcid.org/sites/default/files/images/orcid_16x16.png)](https://orcid.org/0000-0003-0332-8338) - David Bickel - [david.bickel@vub.be](mailto:david.bickel@vub.be)
+
+[![ORCID](https://orcid.org/sites/default/files/images/orcid_16x16.png)](https://orcid.org/0000-0001-7470-4324) - Wim Vranken -  [wim.vranken@vub.be](mailto:wim.vranken@vub.be)
