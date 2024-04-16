@@ -69,20 +69,35 @@ The following features have been added to the native force field:
 * TIP4P-D water model [6]
 * Parameters for phosphorylated residues [7,8]
 
-### AMBER a99SB-*disp*
+### AMBER a99SB-*disp* for GROMACS
 
-The a99SB-disp force field was developed to represent both folded and disordered 
+The a99SB-*disp* force field was developed to represent both folded and disordered 
 protein states. It is based on ff99SB-ILDN with TIP4P-D water model. The vdW 
 terms between water and amino acids were adjusted to improve the representation
 of disordered protein states.[9]
 
-The original version fo the force field is available 
+The original version of the force field is available 
 [here](https://github.com/paulrobustelli/Force-Fields).
 
 #### Added features
 
 The following features have been added to the native force field:
 * Parameters for phosphorylated residues [7,8]
+
+### DES-Amber for GROMACS
+
+The a99SB-*disp* force field [9] revealed substential weaknesses modelling 
+protein-protein interactions. As a result DES-Amber was developped, allowing for
+more accurate simulations of protein−protein complexes, while still providing a 
+state-of-the-art description of both ordered and disordered single-chain 
+proteins.[10]
+
+The original version of the force field is available 
+[here](https://github.com/paulrobustelli/Force-Fields).
+
+#### Added features
+
+*None.*
 
 ## References
 
@@ -95,3 +110,4 @@ The following features have been added to the native force field:
 7.  Homeyer, N. et al. (2006). J. Mol. Model. 12, 281-289.
 8.  Steinbrecher, T. et al. (2012). J. Chem. Theory Comput. 8, 4405-4412.
 9.  Robustelli, P. et al. (2018). Proc. Natl. Acad. Sci. 115 (21), E4758-E4766.
+10. Piana, S. et al. (2020). J. Chem. Theory Comput. 16 2494-2507.
