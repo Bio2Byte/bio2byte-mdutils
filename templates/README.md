@@ -69,7 +69,22 @@ The following features have been added to the native force field:
 * TIP4P-D water model [6]
 * Parameters for phosphorylated residues [7,8]
 
-#### References
+### AMBER a99SB-*disp*
+
+The a99SB-disp force field was developed to represent both folded and disordered 
+protein states. It is based on ff99SB-ILDN with TIP4P-D water model. The vdW 
+terms between water and amino acids were adjusted to improve the representation
+of disordered protein states.[9]
+
+The original version fo the force field is available 
+[here](https://github.com/paulrobustelli/Force-Fields).
+
+#### Added features
+
+The following features have been added to the native force field:
+* Parameters for phosphorylated residues [7,8]
+
+## References
 
 1.  Lindorff-Larsen, K. et al. (2010). Proteins 78, 1950-1958.
 2.  Hornak, V. et al. (2006). Proteins 65, 712-725.
@@ -79,3 +94,4 @@ The following features have been added to the native force field:
 6.  Piana, S. et al. (2015). J. Phys. Chem. B 119, 5113-5123.
 7.  Homeyer, N. et al. (2006). J. Mol. Model. 12, 281-289.
 8.  Steinbrecher, T. et al. (2012). J. Chem. Theory Comput. 8, 4405-4412.
+9.  Robustelli, P. et al. (2018). Proc. Natl. Acad. Sci. 115 (21), E4758-E4766.
