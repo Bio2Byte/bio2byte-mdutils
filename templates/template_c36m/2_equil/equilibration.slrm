@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+#SBATCH --nodes=1
+#SBATCH --gpus-per-node=1
+#SBATCH --cpus-per-gpu=12
+#SBATCH --mem=12G
+#SBATCH --partition=pascal_gpu
+#SBATCH --time=5:00:00
+#SBATCH -J equilibration
+#SBATCH -o %x.o%j
+
+# Load gromacs environment
+unalias grep 2> /dev/null
+unalias ls 2> /dev/null
+export OMP_PROC_BIND=TRUE
+module load GROMACS/2023.1-foss-2022a-CUDA-11.7.0
+
+# Define helper functions
+check_success() {
+    ERRCODE=$?; [ $ERRCODE -ne 0 ] && echo "[ERROR:${ERRCODE}] $*" && exit $ERRCODE
+}
+
+# Goto production directory
+echo "Goto: $SLURM_SUBMIT_DIR"
+cd "$SLURM_SUBMIT_DIR"
+check_success "Failure entering directory: $SLURM_SUBMIT_DIR"
+
+# Run consequtive equilibration procedure
+topFile=../1_prepi/TOPOL.top
+crdFile=../1_prepi/COORD.gro
+mdpFiles=( *.mdp )
+
+for input_mdp in ${mdpFiles[@]}; do
+    stepName=${input_mdp%.mdp}
+    
+    # Print Step description
+    echo -e "\n\n[${input_mdp}]"
+    sed -nr '/^[^;]/q;p' "$input_mdp"
+    if [ -f "${stepName}.gro" ]; then
+        echo "Result file ${stepName}.gro exists already; step is omitted..."
+        crdFile="${stepName}.gro"
+        continue
+    fi
+    
+    # Get parameters for grompp
+    grompp_params=( -f  "$input_mdp" \
+                    -c  "$crdFile" \
+                    -p  "$topFile" \
+                    -o  "${stepName}.tpr" )
+    grep -iqE 'define *= *-DPOSRES' "$input_mdp" && \
+        grompp_params+=( -r  "$crdFile" )
+    grep -iqE 'continuation *= *yes' "$input_mdp" && \
+        grompp_params+=( -t "${crdFile%.gro}.cpt" )
+        
+    # Run grompp
+    gmx grompp ${grompp_params[@]}
+    check_success "Failure executing gmx grompp: gmx grompp ${grompp_params[@]}"
+
+    # Run MDRUN
+    gmx mdrun -deffnm "$stepName" -nt $SLURM_CPUS_PER_GPU -nb gpu
+    check_success "Failure executing gmx mdrun: gmx mdrun -deffnm "$stepName" -nt $SLURM_CPUS_PER_GPU -nb gpu"
+    
+    crdFile="${stepName}.gro"
+    unset grompp_params
+done

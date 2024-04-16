@@ -46,6 +46,20 @@ In the `3_prod/` finally contains the production simulation. The
 simulation, and resubmit itself until the maximum number of iterations
 is reached.
 
+### Template for ff99SB-type force fields
+
+This template is used for force fields based on ff99SB, namely:
+* ff99SB-ILDN
+* a99SB-*disp*
+* DES-Amber
+
+### Template for CHARMM36m
+
+This is a template for running simulations using the CHARM36m force field.
+The following version is provided alongside.
+* CHARMM36m (February 4, 2021) 
+
+
 ## Force fields
 
 ### AMBER ff99SB-ILDN  for GROMACS
@@ -99,6 +113,32 @@ The original version of the force field is available
 
 *None.*
 
+### CHARMM36m for GROMACS
+
+CHARMM36 force field in GROMACS format, including CGenFF version 4.4 and the 
+CHARMM36m protein force field revision. Updated July 2020. Users can choose 
+between C36 and C36m for protein simulations via the GROMACS "define" 
+mechanism: `define = -DUSE_OLD_C36`.
+
+The C36m parameter set is recommended for all protein simulations, but the 
+ability to toggle between old and new parameter sets may be useful in the 
+case of force field comparisons.[11]
+
+The current CHARMM36 port for GROMACS is dated **February 4, 2021** and 
+corresponds to the July 2020 toppar update.[12] Changes since March 2019 include
+an update to CGenFF version 4.4, consolidation of parameters, new modified 
+nucleic acid model compounds, and new NBFIXes for ions. The version posted in 
+July 2020 omitted several NBFIXes related to Ca2+, which have been incorporated 
+in the February 2021 version.
+
+The original version of this force field is available 
+[here](http://mackerell.umaryland.edu/charmm_ff.shtml#gromacs).
+
+#### Added features
+
+*None.*
+
+
 ## References
 
 1.  Lindorff-Larsen, K. et al. (2010). Proteins 78, 1950-1958.
@@ -111,3 +151,5 @@ The original version of the force field is available
 8.  Steinbrecher, T. et al. (2012). J. Chem. Theory Comput. 8, 4405-4412.
 9.  Robustelli, P. et al. (2018). Proc. Natl. Acad. Sci. 115 (21), E4758-E4766.
 10. Piana, S. et al. (2020). J. Chem. Theory Comput. 16 2494-2507.
+11. Huang, J. et al. (2017) Nat. Methods, 14(1), 71–73. 
+12. CHARMM port writted by: E. Prabhu Raman, Justin A. Lemkul, Robert Best, and Alexander D. MacKerell, Jr. ([source](http://mackerell.umaryland.edu/charmm_ff.shtml#gromacs), accessed 12/07/2021)

@@ -1,0 +1,20 @@
+; rtp residue to rtp building block table
+;GMX   Force-field
+HISD	HSD
+HIS1	HSD
+HISE	HSE
+HISH	HSP
+LYSN	LSN
+ASPH	ASPP
+GLUH	GLUP
+RA		ADE
+RG		GUA
+RU		URA
+RC		CYT
+; Phosphorylated aa (edited: bickeld 15/9/2021)
+S1P     SP1
+SEP     SP2
+T1P     THP1
+TPO     THP2
+Y1P     TP1
+PTR     TP2
