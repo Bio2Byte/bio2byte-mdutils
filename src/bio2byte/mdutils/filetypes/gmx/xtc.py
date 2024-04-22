@@ -1,97 +1,92 @@
 #!/usr/bin/env python
 
 """
+Author:   David Bickel
+Date:     22/04/2024
+
 Module for parsing GROMACS XTC files in Python.
 
 This module is loosly based on the work of Tsjerk: 
     https://github.com/Tsjerk/xtc/blob/master/xtc.py
-
-It uses a fixed byte format to find the individual frames in
-an XTC file:
-     0. Magic number (4)    0 -  4 l
-     1. Atoms (4)           4 -  8 l
-     2. Step  (4)           8 - 12 l 
-     3. Time (4)           12 - 16 f
-     4. Box (9*4)          16 - 52 fffffffff
-    13. Atoms (4)          52 - 56 l           (checked to be equal to b.)
-    14. Precision (4)      56 - 60 f
-    15. Extent (6*4)       60 - 84 llllll      (MIN: x,y,z, MAX: x,y,z)
-    21. smallidx (4)       84 - 88 l
-    22. Size in bytes (4)  88 - 92 l 
-    23. Coordinates (compressed)
 """
 
-import os
 import sys
 import struct
 
 
+class XTCParsingError(ValueError):
+    pass
+
+
 class GromacsXTC:
 
-    XTC_FRAME_FORMAT = ">3l10flf8l"
+    # Many thanks to Tsjerk:
+    # https://github.com/Tsjerk/xtc/blob/master/xtc.py
+    XTC_FRAME_FORMAT = (
+        ">"
+        "l"             # Magic number (4) == 1995
+        "l"             # Atoms (4)
+        "l"             # Step (4)
+        "f"             # Time (4)
+        "fffffffff"     # Box (9*4)
+        "l"             # Atoms (4), checked to be equal to above
+        "f"             # PRecision (4)
+        "lllllll"       # Extent (6*4), MIN: x,y,z, MAX: x,y,z
+        "l"             # Size in bytes (4)
+        # ... Compressed coordinates
+    )
 
-    def __init__(self, filename):
+    def __init__(self, filename: str):
         self.filename = filename
-        self.__fhandle = open(filename, "rb")
-        n, m, s0, s1, t0, t1 = self._get_trjattr()
-        self.__nframes = n
-        self.__natoms = m
-        self.__step0 = s0
-        self.__step1 = s1
-        self.__time0 = t0
-        self.__time1 = t1
+        self._fhandle = open(filename, "rb")
+        self._pointers = list(self._iter_frame_pointers())
+        self.goto(0)
+        (
+            magicnumber,    # Magic number
+            self.natoms,    # Number of atoms in the system
+            self.step0,     # First step in the XTC file
+            self.time0      # First time in the XTC file [ps]
+        ) = struct.unpack(self.XTC_FRAME_FORMAT[:5], self.read(16))
+        self.goto(-1)
+        (
+            magicnumber,    # Magic number
+            self.natoms,    # Number of atoms in the system
+            self.step1,     # Last step in the XTC file
+            self.time1      # Last time in the XTC file [ps]
+        ) = struct.unpack(self.XTC_FRAME_FORMAT[:5], self.read(16))
+        self.goto(0)        # Reset pointer
+        if magicnumber != 1995:
+            raise XTCParsingError("Unexpected magic number in XTC file: {0}".format(magicnumber))
 
     @property
     def nframes(self):
-        ''' Returns total number of frames in the xtc file '''
-        return self.__nframes
-
-    @property
-    def natoms(self):
-        ''' Returns number of atoms in the xtc file '''
-        return self.__natoms
-
-    @property
-    def step0(self):
-        ''' Returns the step number of the first frame '''
-        return self.__step0
-
-    @property
-    def step1(self):
-        ''' Returns the step number of the last frame '''
-        return self.__step1
-
-    @property
-    def time0(self):
-        ''' Returns the time index of the first frame '''
-        return self.__time0
-
-    @property
-    def time1(self):
-        ''' Returns the time index of the last frame '''
-        return self.__time1
+        """Returns total number of frames in the xtc file"""
+        return len(self._pointers)
 
     def __del__(self):
-        self.__fhandle.close()
+        self._fhandle.close()
 
-    def _get_trjattr(self):
-        m0, s0, t0 = struct.unpack(">llf", self.read(12, 4))
-        n = 0
-        for i in self._iter_frame_indices(): n += 1
-        m1, s1, t1 = struct.unpack(">llf", self.read(12, i+4))
-        return n, m1, s0, s1, t0, t1
+    def goto(self, index: int):
+        """Goto frame with index in XTC file"""
+        self._fhandle.seek(self._pointers[index])
+        return self._fhandle.tell()
+    
+    def seek(self, pos: int):
+        """Goto position in XTC file"""
+        self._fhandle.seek(pos)
+        return self._fhandle.tell()
 
-    def read(self, n_bytes, pointer=None):
-        if isinstance(pointer, int):
-            self.__fhandle.seek(pointer)
-        return self.__fhandle.read(n_bytes)
+    def read(self, n_bytes=None):
+        """Read n_bytes starting from the current file location"""
+        return self._fhandle.read(n_bytes)
 
-    def _iter_frame_indices(self, bytebuffer=10007):
-        self.__fhandle.seek(0)
-        tag = self.__fhandle.read(8)    # Fixed tag (MagicNumber + NumberOfAtoms)
-        self.__fhandle.seek(0)
-        buffer = self.__fhandle.read(bytebuffer)
+    def _iter_frame_pointers(self, bytebuffer=10007):
         pos = 0
+        self.seek(pos)
+        tag = self.read(8)    # Fixed tag (MagicNumber + NumberOfAtoms)
+
+        self.seek(pos)
+        buffer = self.read(bytebuffer)        
         while len(buffer) >= 56:
             idx = buffer.find(tag)      # Find tag in buffer
             try:
@@ -100,7 +95,7 @@ class GromacsXTC:
 
                 # Verify match by checking if NumberOfAtoms is repeated at the right position
                 if len(buffer) < idx+56:
-                    buffer += self.__fhandle.read(56)
+                    buffer += self.read(56)
                 assert buffer[idx+52:idx+56] == tag[4:]
                 
                 # Match found: yield position and move on
@@ -114,22 +109,15 @@ class GromacsXTC:
                 if len(buffer) >= 56:
                     pos += len(buffer) - 55
                     buffer = buffer[-55:]
-            if len(buffer) < 56:
-                buffer += self.__fhandle.read(bytebuffer)
 
-def main(*xtcfiles):
-    """Displays the number of atoms and number of frames of an XTC file."""
-    for xtcfile in xtcfiles:
-        if os.path.isfile(xtcfile):
-            xtc = GromacsXTC(xtcfile)
-            sys.stdout.write("%s\t%d\t%d\n" % (xtcfile, xtc.natoms, xtc.nframes))
-        else:
-            sys.stderr.write("%s\tERROR: File not found!\n" % xtcfile)
+            if len(buffer) < 56:
+                buffer += self.read(bytebuffer)
+
+def main(args):
+    sys.stderr.write("#File\tn_atoms\tn_frames\n")
+    for fname in args:
+        xtc = GromacsXTC(fname)
+        sys.stdout.write("{0}\t{1:d}\t{2:d}\n".format(fname, xtc.natoms, xtc.nframes))
 
 if __name__ == "__main__":
-    main(*sys.argv[1:])
-    
-        
-        
-    
-
+    sys.exit(main(sys.argv[1:]))
