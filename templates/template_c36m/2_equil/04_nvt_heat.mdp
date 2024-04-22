@@ -1,0 +1,56 @@
+; Temperature equilibration by 50 ps NVT MD
+;   Restraints of 1000 kcal/mol/nm2 on solute heavy atoms
+define = -DPOSRES
+
+; MD run parameters
+integrator = md
+nsteps     = 25000
+dt         = 0.002
+
+; Output control
+nstxout-compressed = 2500
+nstenergy          = 100
+nstlog             = 500
+
+; Neighbor list
+cutoff-scheme = Verlet
+nstlist       = 20
+rlist         = 1.2
+verlet-buffer-tolerance = 0.005
+
+; Electrostatics
+coulombtype    = PME
+rcoulomb       = 1.2
+pme-order      = 4
+fourierspacing = 0.12
+
+; VdW
+vdwtype      = Cut-off
+vdw-modifier = Potential-shift
+rvdw         = 1.2
+rvdw-switch  = 1.0
+DispCorr     = no
+
+; Temperature control
+tcoupl     = v-rescale
+tc-grps    = Protein    Non-Protein
+ref-t      = 298        298
+tau-t      = 0.1        0.1
+nsttcouple = 10
+
+; Pressure control
+pcoupl = no
+
+; Generate starting velocities
+gen-vel  = yes
+gen-temp = 298
+gen-seed = -1
+
+; Bonds
+constraints          = h-bonds
+constraint-algorithm = LINCS
+lincs-order          = 4
+lincs-iter           = 2
+
+pbc = xyz
+

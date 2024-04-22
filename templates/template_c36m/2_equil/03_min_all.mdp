@@ -1,0 +1,29 @@
+; Minimization of all atoms w/o restraints
+
+; Energy minimization parameters
+integrator = steep
+emtol      = 100        ; 100.0 kJ/mol/nm
+emstep     = .01
+nsteps     = 10000
+nstlog     = 10
+
+; Neighbor list
+cutoff-scheme = Verlet
+nstlist       = 20
+rlist         = 1.2
+pbc           = xyz
+verlet-buffer-tolerance = 0.005
+
+; Electrostatics
+coulombtype    = PME
+rcoulomb       = 1.2
+pme-order      = 4
+fourierspacing = 0.12
+
+; VdW
+vdwtype      = Cut-off
+vdw-modifier = Potential-shift
+rvdw         = 1.2
+rvdw-switch  = 1.0
+DispCorr     = no
+
